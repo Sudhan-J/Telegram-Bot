@@ -36,8 +36,9 @@ def create_google_maps_url(gps_coords):
 def GPSinformation(path):
     image = Image.open(path)
     gps_coords = {}
+    exif = image.getexif()
     # for tag,value in image._getexif().items():
-    for tag,value in image._getexif().items():
+    for tag,value in exif.items():
         tagname = TAGS.get(tag)
         if tagname == "GPSInfo":
             for key,val in value.items():
@@ -84,7 +85,7 @@ def document(message):
     gps_coords = GPSinformation(path)
     url = create_google_maps_url(gps_coords)
     # No meta data
-    if data == None:
+    if data == '':
         bot.reply_to(message,'The meta date is already stripped. sorry ')
     else:
         bot.reply_to(message,f'The device info {data}\n\nThe Google Maps link : {url}')
