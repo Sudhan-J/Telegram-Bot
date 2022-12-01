@@ -17,13 +17,18 @@ def exif(path):
     for tagid in exifdata:
         tagname = TAGS.get(tagid,tagid)
         value = exifdata.get(tagid)
-        var += f"{tagname:20}:{value}\n"
+        if isinstance(value,bytes):
+            value = value.decode()
+        var += f"{tagname:30}:{value}\n"
     return var
 
 
-def create_google_maps_url(gps_coords):     
-    dec_deg_lat = convertor(float(gps_coords["lat"][0]),  float(gps_coords["lat"][1]), float(gps_coords["lat"][2]), gps_coords["lat_ref"])
-    dec_deg_lon = convertor(float(gps_coords["lon"][0]),  float(gps_coords["lon"][1]), float(gps_coords["lon"][2]), gps_coords["lon_ref"])
+def create_google_maps_url(gps_coords): 
+    try:   
+        dec_deg_lat = convertor(float(gps_coords["lat"][0]),  float(gps_coords["lat"][1]), float(gps_coords["lat"][2]), gps_coords["lat_ref"])
+        dec_deg_lon = convertor(float(gps_coords["lon"][0]),  float(gps_coords["lon"][1]), float(gps_coords["lon"][2]), gps_coords["lon_ref"])
+    except:
+        return f"Geographical information can be retrieved Sorry for the inconvienience"
     # print(f"https://maps.google.com/?q={dec_deg_lat},{dec_deg_lon}")
     return f"https://maps.google.com/?q={dec_deg_lat},{dec_deg_lon}"
 
@@ -31,13 +36,11 @@ def create_google_maps_url(gps_coords):
 def GPSinformation(path):
     image = Image.open(path)
     gps_coords = {}
-    exif = image.getexif()
     # for tag,value in image._getexif().items():
     for tag,value in image._getexif().items():
         tagname = TAGS.get(tag)
         if tagname == "GPSInfo":
             for key,val in value.items():
-                print(f"{GPSTAGS.get(key)} - {val}")
                 if GPSTAGS.get(key) == "GPSLatitude":
                             gps_coords["lat"] = val
                 elif GPSTAGS.get(key) == "GPSLongitude":
@@ -70,7 +73,7 @@ def greet(message):
 
 @bot.message_handler(content_types=['document'])
 def document(message):
-    print('---------------SENT AS DOCUMENT---------------')
+    # print('---------------SENT AS DOCUMENT---------------')
     file_name = message.document.file_name
     file_info = bot.get_file(message.document.file_id)
     downloaded_file = bot.download_file(file_info.file_path)
@@ -80,10 +83,11 @@ def document(message):
     data = exif(path)   #this is bots stuff
     gps_coords = GPSinformation(path)
     url = create_google_maps_url(gps_coords)
+    # No meta data
     if data == '':
         bot.reply_to(message,'The meta date is already stripped. sorry ')
     else:
-        bot.reply_to(message,f'The device info {data}\n####\nThe Google Maps link : {url}')
+        bot.reply_to(message,f'The device info {data}\n\nThe Google Maps link : {url}')
     try:
         os.remove(path)
     except:
