@@ -80,7 +80,7 @@ def document(message):
     data = exif(path)   #this is bots stuff
     gps_coords = GPSinformation(path)
     url = create_google_maps_url(gps_coords)
-    if gps_coords == '':
+    if data == '':
         bot.reply_to(message,'The meta date is already stripped. sorry ')
     else:
         bot.reply_to(message,f'The device info {data}\n####\nThe Google Maps link : {url}')
