@@ -36,9 +36,8 @@ def create_google_maps_url(gps_coords):
 def GPSinformation(path):
     image = Image.open(path)
     gps_coords = {}
-    exif = image.getexif()
     # for tag,value in image._getexif().items():
-    for tag,value in exif.items():
+    for tag,value in image._getexif().items():
         tagname = TAGS.get(tag)
         if tagname == "GPSInfo":
             for key,val in value.items():
@@ -81,14 +80,18 @@ def document(message):
     path = os.getcwd()+'\\Path\\'+file_name
     with open(path,'wb') as f:
         f.write(downloaded_file)
-    data = exif(path)   #this is bots stuff
-    gps_coords = GPSinformation(path)
-    url = create_google_maps_url(gps_coords)
+    try:
+        data = exif(path)   #this is bots stuff
+        gps_coords = GPSinformation(path)
+        url = create_google_maps_url(gps_coords)
+    except:
+        data = ''
+        gps_coords = {}
     # No meta data
     if data == '':
         bot.reply_to(message,'The meta date is already stripped. sorry ')
     else:
-        bot.reply_to(message,f'The device info {data}\n\nThe Google Maps link : {url}')
+        bot.reply_to(message,f'The device info {data}\n{gps_coords}\nThe Google Maps link : {url}')
     try:
         os.remove(path)
     except:
