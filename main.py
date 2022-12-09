@@ -28,7 +28,7 @@ def create_google_maps_url(gps_coords):
         dec_deg_lat = convertor(float(gps_coords["lat"][0]),  float(gps_coords["lat"][1]), float(gps_coords["lat"][2]), gps_coords["lat_ref"])
         dec_deg_lon = convertor(float(gps_coords["lon"][0]),  float(gps_coords["lon"][1]), float(gps_coords["lon"][2]), gps_coords["lon_ref"])
     except:
-        return f"Geographical information can be retrieved Sorry for the inconvienience"
+        return f"Geographical information can't be retrieved Sorry for the inconvienience"
     # print(f"https://maps.google.com/?q={dec_deg_lat},{dec_deg_lon}")
     return f"https://maps.google.com/?q={dec_deg_lat},{dec_deg_lon}"
 
