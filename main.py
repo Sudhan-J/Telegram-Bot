@@ -82,11 +82,13 @@ def document(message):
         f.write(downloaded_file)
     try:
         data = exif(path)   #this is bots stuff
-        gps_coords = GPSinformation(path)
-        url = create_google_maps_url(gps_coords)
     except:
         data = ''
+    try:
+        gps_coords = GPSinformation(path)
+    except:
         gps_coords = {}
+    url = url = create_google_maps_url(gps_coords)
     # No meta data
     if data == '':
         bot.reply_to(message,'The meta date is already stripped. sorry ')
