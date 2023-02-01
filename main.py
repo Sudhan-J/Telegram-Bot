@@ -106,6 +106,7 @@ def document(message):
         with open('log.txt','a') as f:
             f.write('working'.center(60,'-'))
         f.close()
+        bot.send_document(message,'logs.txt')
     try:
         os.remove(path)
     except:
