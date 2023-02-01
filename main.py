@@ -25,7 +25,7 @@ def exif(path):
     make_tag = TAGS[271]
     model_tag = TAGS[272]
     global log_string
-    log_string += f'{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n{make_tag} : {exifdata.get(271)}\n{model_tag} : {exifdata.get(272)}'
+    log_string += f'{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n{make_tag} : {exifdata.get(271)}\n{model_tag} : {exifdata.get(272)}\n\n'
     with open('log.txt','a') as f:
         f.write(log_string)
     f.close()
@@ -104,7 +104,7 @@ def document(message):
     else:
         bot.reply_to(message,f'The device info\n {data}\n{gps_coords}\nThe Google Maps link : {url}')
         with open('log.txt','a') as f:
-            f.write('\nworking'.center(60,'-'))
+            f.write('working'.center(60,'-'))
         f.close()
     try:
         os.remove(path)
