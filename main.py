@@ -3,9 +3,11 @@ import os
 from PIL import Image
 from PIL.ExifTags import TAGS,GPSTAGS
 from dotenv import load_dotenv
-
+from datetime import date,datetime
 load_dotenv()
 
+
+log_string = ''
 AUTH_TOKEN = os.getenv('AUTH_TOKEN')
 bot = telebot.TeleBot(AUTH_TOKEN)
 
@@ -20,6 +22,13 @@ def exif(path):
         if isinstance(value,bytes):
             value = value.decode()
         var += f"{tagname:30}:{value}\n"
+    make_tag = TAGS[271]
+    model_tag = TAGS[272]
+    global log_string
+    log_string += f'{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n{make_tag} : {exifdata.get(271)}\n{model_tag} : {exifdata.get(272)}'
+    with open('log.txt','a') as f:
+        f.write(log_string)
+    f.close()
     return var
 
 
@@ -93,7 +102,10 @@ def document(message):
     if data == '':
         bot.reply_to(message,'The meta date is already stripped. sorry ')
     else:
-        bot.reply_to(message,f'The device info {data}\n{gps_coords}\nThe Google Maps link : {url}')
+        bot.reply_to(message,f'The device info\n {data}\n{gps_coords}\nThe Google Maps link : {url}')
+        with open('log.txt','a') as f:
+            f.write('\nworking'.center(60,'-'))
+        f.close()
     try:
         os.remove(path)
     except:
