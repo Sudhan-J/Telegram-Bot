@@ -7,7 +7,7 @@ from datetime import date,datetime
 load_dotenv()
 
 
-log_string = ''
+
 
 AUTH_TOKEN = os.getenv('AUTH_TOKEN')
 bot = telebot.TeleBot(AUTH_TOKEN)
@@ -25,8 +25,6 @@ def exif(path):
         var += f"{tagname:30}:{value}\n"
     make_tag = TAGS[271]
     model_tag = TAGS[272]
-    global log_string
-    log_string += f'{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n{make_tag} : {exifdata.get(271)}\n{model_tag} : {exifdata.get(272)}\n\n'
     return var
 
 
@@ -80,7 +78,6 @@ def greet(message):
 
 @bot.message_handler(content_types=['document'])
 def document(message):
-    global log_string
     # print('---------------SENT AS DOCUMENT---------------')
     file_name = message.document.file_name
     file_info = bot.get_file(message.document.file_id)
@@ -96,14 +93,12 @@ def document(message):
         gps_coords = GPSinformation(path)
     except:
         gps_coords = {}
-        log_string += "NOT WORKING".center(60,'-')
     url = create_google_maps_url(gps_coords)
     # No meta data
     if data == '':
         bot.reply_to(message,'The meta date is already stripped. sorry ')
     else:
         bot.reply_to(message,f'The device info\n {data}\n{gps_coords}\nThe Google Maps link : {url}')
-        print(log_string)
     try:
         os.remove(path)
     except:
